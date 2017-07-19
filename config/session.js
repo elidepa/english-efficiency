@@ -12,15 +12,15 @@ module.exports = {
       'I': [
         {
           type: 'A',
-          duration: 30000
+          duration: 120000
         },
         {
           type: 'M',
-          duration: 30000
+          duration: 120000
         },
         {
           type: 'V',
-          duration: 30000
+          duration: 120000
         }
       ],
       'T1': [
