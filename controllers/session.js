@@ -51,6 +51,9 @@ module.exports = {
                   $unwind: '$pseudoword'
                 }
               ]).sample(1).exec()
+              if (!found[0]) {
+                logger.error(`found undefined, bigram=${bigram}`)
+              }
               return {
                 bigram: found[0].bigram,
                 pseudoword: found[0].pseudoword
@@ -65,7 +68,7 @@ module.exports = {
       return sessionData
       
     } catch (err) {
-      logger.error(`Generationg session data failed: ${err}`)
+      logger.error(`Generating session data failed: ${err}`)
     }
   }
 }

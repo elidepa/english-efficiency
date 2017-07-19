@@ -7,7 +7,7 @@ log4js.configure({
     request: { type: 'file', filename: './logs/request.log' }
   },
   categories: {
-    default: { appenders: ['stdout','app'], level: 'info'},
+    default: { appenders: ['stdout','app'], level: 'debug'},
     devel: { appenders: ['stdout'], level: 'trace'},
     request: { appenders: ['request','stdout'], level: 'info' }
   }
