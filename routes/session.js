@@ -5,8 +5,12 @@ const logger = require('../config/logger').logger
 module.exports = router => {
 
   router.post('/api/session', (ctx, next) => {
-    resultsController.saveResults(ctx.request.body)
-    ctx.status = 200
+    try {
+      resultsController.saveResults(ctx.request.body, ctx.state.user.user)
+      ctx.status = 200
+    } catch (err) {
+      ctx.status = 500
+    }
   })
 
   router.get('/api/session', async (ctx, next) => {

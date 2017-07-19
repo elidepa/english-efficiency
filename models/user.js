@@ -20,10 +20,13 @@ const user = new Schema({
     hasAppliedSkills: Boolean,
     results: {
       wpm: Number,
-      errorRate: Number,
+      aErrorRate: Number,
+      tErrorRate: Number,
+      vErrorRate: Number,
       avgReactionTime: Number,
       avgIKI: Number,
-      trials: Number,
+      mTrials: Number,
+      vTrials: Number,
       avgSearchTime: Number,
     }
   }]

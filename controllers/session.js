@@ -21,6 +21,7 @@ module.exports = {
     try {
       const user = await models.User.findOne({ email: username })
       const { group } = user
+      logger.trace(user.sessions.length ? user.sessions.length : 0)
       const sessionType = sessionConfig.groupConfig[group][user.sessions.length ? user.sessions.length : 0]
       let interventions = sessionConfig.interventionConfig[group][sessionType]
 

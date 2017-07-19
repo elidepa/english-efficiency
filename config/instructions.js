@@ -1,37 +1,35 @@
 module.exports = {
   'M': [
     {
-      {
-        instruction: "Your task is to press two keys that are shown on the screen using two fingers of the same hand."
-      },
-      {
-        instruction: "1. You are shown 2 keys. ",
-        img: "/images/MC_1.png"
-      },
-      {
-        instruction: "2. Press down the first key.",
-        img: "/images/MC_2.png"
-      },
-      {
-        instruction: "3. Press down the second key, while still holding down the first one.",
-        img: "/images/MC_3.png"
-      },
-      {
-        instruction: "4. Release the first key.",
-        img: "/images/MC_4.png"
-      },
-      {
-        instruction: "5. Release the second key.",
-        img: "/images/MC_5.png"
-      },
-      { instruction: "Repeat this 5 times." },
-      { instruction: '' },
-      { instruction: "Please use your left hand for the left side of the keyboard and right hand for the right side of the keyboard."},
-      { instruction: "DO NOT use the thumbs, keep them over the space bar."},
-      { instruction: '' },
-      { instruction: "After that, you will be shown a nonsense word. Type out the word as fast as possible. Repeat the word 5 times. "},
-      { instruction: "Note: the word contains the two letters you practiced before. Please use the same fingers to type them."}
-    }
+      text: "Your task is to press two keys that are shown on the screen using two fingers of the same hand."
+    },
+    {
+      text: "1. You are shown 2 keys. ",
+      img: "/images/MC_1.png"
+    },
+    {
+      text: "2. Press down the first key.",
+      img: "/images/MC_2.png"
+    },
+    {
+      text: "3. Press down the second key, while still holding down the first one.",
+      img: "/images/MC_3.png"
+    },
+    {
+      text: "4. Release the first key.",
+      img: "/images/MC_4.png"
+    },
+    {
+      text: "5. Release the second key.",
+      img: "/images/MC_5.png"
+    },
+    { text: "Repeat this 5 times." },
+    { text: '' },
+    { text: "Please use your left hand for the left side of the keyboard and right hand for the right side of the keyboard."},
+    { text: "DO NOT use the thumbs, keep them over the space bar."},
+    { text: '' },
+    { text: "After that, you will be shown a nonsense word. Type out the word as fast as possible. Repeat the word 5 times. "},
+    { text: "Note: the word contains the two letters you practiced before. Please use the same fingers to type them."}
   ],
   'V': [
     { text: "Your task is to visually locate letters on an image of a keyboard, and then click them using the mouse." },

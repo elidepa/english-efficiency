@@ -2,3 +2,4 @@ node_modules/
 logs/
 .process.yml
 ecosystem.config.js
+results

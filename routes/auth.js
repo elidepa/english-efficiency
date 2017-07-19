@@ -56,14 +56,15 @@ module.exports = router => {
 
       const user = new models.User({
         email,
-        group
+        group,
+        sessions: []
       })
 
-      logger.debug(`Creating user ${user.username}`)
+      logger.trace(`Creating user ${user.email}`)
 
       await user.save();
 
-      logger.debug(`Succesfully created user ${user.username}`)
+      logger.trace(`Succesfully created user ${user.email}`)
 
       ctx.status = 200
     } catch (err) {
