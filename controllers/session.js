@@ -20,10 +20,19 @@ module.exports = {
   generateSessionData: async (username) => {
     try {
       const user = await models.User.findOne({ email: username })
-      const { group } = user
-      logger.trace(user.sessions.length ? user.sessions.length : 0)
+      const { group, sessions } = user
       const sessionType = sessionConfig.groupConfig[group][user.sessions.length ? user.sessions.length : 0]
-      let interventions = sessionConfig.interventionConfig[group][sessionType]
+      let interventions = sessionConfig.interventionConfig[group][sessionType].interventions
+
+      if (sessions.length > 0) {
+        const lastDate = sessions[sessions.length - 1].date
+        if (lastDate.getTime() + sessionConfig.interventionConfig[group][sessionType].minTimeFromLast > Date.now()) {
+          return {
+            tooEarly: true,
+            nextSession: lastDate.getTime() + sessionConfig.interventionConfig[group][sessionType].minTimeFromLast
+          }
+        }
+      }
 
       interventions = _.shuffle(interventions)
 
@@ -63,6 +72,12 @@ module.exports = {
             .value()
           )
           return _.merge(session, {interventionData})
+        } else if (intervention.type === 'T') {
+          const sentences = await models.Sentence.find({ intervention: intervention.sentences })
+          const interventionData = {
+            sentences: _.map(sentences, sentence => sentence.sentence)
+          }
+          return _.merge(session, { interventionData })
         }
       }))
 

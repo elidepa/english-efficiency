@@ -14,7 +14,7 @@ module.exports = router => {
       // TODO: Actual auth logic
       logger.trace(ctx.request.body)
       const user = await models.User.findOne({ email: ctx.request.body.email })
-      const token = await jwt.signAsync({ user: user.email }, appSecret, { expiresIn: 60 * 60 * 2 })
+      const token = await jwt.signAsync({ user: user.email }, appSecret, { expiresIn: 60 * 60 * 48 })
       ctx.status = 200
       ctx.body = JSON.stringify({token})
     } catch (err) {

@@ -64,4 +64,11 @@ module.exports = {
       img: "/images/SoA_5.png"
     }
   ],
+  'T': [
+    { text: "Your task is to type 35 sentences as fast and as accurately as possible." },
+    { text: "1. Read through the shown sentence." },
+    { text: "2. Type the sentence as fast and as accurately as possible." },
+    { text: "3. After finishing a sentence, press 'Enter' to show the next one." },
+    { text: "Performance is measured from the first to the last keystroke of each sentence." }
+  ]
 }

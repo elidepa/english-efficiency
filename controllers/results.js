@@ -42,6 +42,23 @@ const writeAResults = ({ sectionsStr, keystrokeStr, distractionStr }, user) => {
   }
 }
 
+const writeTResults = ({ sectionsStr, keystrokeStr }, user) => {
+  try {
+    mkdirp(`results/${user.email}/${user.sessions.length + 1}`, async (err) => {
+      if (err) {
+        throw err
+      }
+      
+      await Promise.all([
+        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/t_sections.csv`, sectionsStr),
+        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/t_keystrokes.csv`, keystrokeStr)
+      ])
+    })
+  } catch (err) {
+    logger.error(`Error while writing results to file: ${err}`)
+  }
+}
+
 const writeVResults = ({ clickStr, mouseStr }, user) => {
   try {
     mkdirp(`results/${user.email}/${user.sessions.length + 1}`, async (err) => {
@@ -122,7 +139,29 @@ const parseAResults = async ({ sections }, user) => {
   }
 }
 
-const parseVResults = async ({ sections }, user) => {
+const parseTResults = ({ sections }, user) => {
+  let sectionsStr = 'section_id\tstimulus\tuser_input\n'
+  let keystrokeStr = 'section_id\tkeystroke_id\tpress_time\trelease_time\tletter\n'
+
+  _.forEach(sections, ({ section, keystrokes, distractions }, sectionId) => {
+    sectionsStr += `${sectionId}\t${section.sentence}\t${section.userInput}\n`
+
+    _.forEach(keystrokes, ({ key, keydown, keyup }, keystrokeId) => {
+      keystrokeStr += `${sectionId}\t${keystrokeId}\t${keydown}\t${keyup}\t${key}\n`
+    })
+  })
+
+  return {
+    wpm: 123,
+    aErrorRate: 0.0123,
+    toWrite: {
+      sectionsStr,
+      keystrokeStr
+    }
+  }
+}
+
+const parseVResults = ({ sections }, user) => {
   let clickStr = ''
   let mouseStr = ''
   clickStr += 'section_id\tbigram\tcue\tcue_position\tcue_shown_time\tcue_clicked_time\ttarget_clicked_time\tclick_x\tclick_y\tclicked_key\n'
@@ -149,7 +188,7 @@ const parseVResults = async ({ sections }, user) => {
 module.exports = {
   saveResults: async (results, email) => {
     try {
-      const user = (await models.User.find({ email }))[0]
+      const user = await models.User.findOne({ email })
 
       const parsedResults = _(results)
         .map(async (interventionResults, key) => {
@@ -166,6 +205,10 @@ module.exports = {
             const vResults = await parseVResults(interventionResults)
             await writeVResults(vResults.toWrite, user)
             return _.omit(vResults, 'toWrite')
+          case 'T':
+            const tResults = await parseTResults(interventionResults)
+            await writeTResults(tResults.toWrite, user)
+            return _.omit(tResults, 'toWrite')
           }
         })
         .reduce((o, values) => { return _.merge(o,values) }, {})
