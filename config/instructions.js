@@ -1,6 +1,10 @@
 module.exports = {
   'M': [
     {
+      explanation: 'This exercise helps your fingers work together while typing. You will learn to type common ' +
+        'letter-pairs faster using two fingers. This improves your overall typing speed.'
+    },
+    {
       text: "Your task is to press two keys that are shown on the screen using two fingers of the same hand."
     },
     {
@@ -32,6 +36,10 @@ module.exports = {
     { text: "Note: the word contains the two letters you practiced before. Please use the same fingers to type them."}
   ],
   'V': [
+    {
+      explanation: 'This exercise helps you to learn where the keys are on the keyboard. The better you know ' +
+        'where the keys are, the faster you can type!'
+    },
     { text: "Your task is to visually locate letters on an image of a keyboard, and then click them using the mouse." },
     {
       text: "1. You will first see a letter at a random location on the screen. Using the mouse, click the letter. This brings up a picture of a keyboard.",
@@ -47,6 +55,11 @@ module.exports = {
     }
   ],
   'A': [
+    {
+      explanation: 'This exercise will help you learn to type without looking at the keyboard. Looking at the ' +
+        'screen instead of the keyboard is important for noticing typing errors quickly. The faster ' +
+        'you notice them, the faster you can correct them.'
+    },
     { text: "Your task is to type the shown sentences and react to changes on the screen as fast as possible." },
     { text: "1. Start typing the shown phrase as fast and accurately as possible." },
     {
