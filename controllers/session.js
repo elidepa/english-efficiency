@@ -24,9 +24,12 @@ module.exports = {
       const sessionType = sessionConfig.groupConfig[group][user.sessions.length ? user.sessions.length : 0]
       let interventions = sessionConfig.interventionConfig[group][sessionType].interventions
 
+      logger.debug(`creating session for user ${username}`)
+
       if (sessions.length > 0) {
         const lastDate = sessions[sessions.length - 1].date
         if (lastDate.getTime() + sessionConfig.interventionConfig[group][sessionType].minTimeFromLast > Date.now()) {
+          logger.debug(`time since last session too small, user=${username}`)
           return {
             tooEarly: true,
             nextSession: lastDate.getTime() + sessionConfig.interventionConfig[group][sessionType].minTimeFromLast
@@ -80,6 +83,9 @@ module.exports = {
           return _.merge(session, { interventionData })
         }
       }))
+
+      logger.debug(`session data ready, user=${username}`)
+      logger.debug(`${sessioData}`)
 
       return sessionData
       
