@@ -85,7 +85,7 @@ module.exports = {
       }))
 
       logger.debug(`session data ready, user=${username}`)
-      logger.debug(`${sessioData}`)
+      logger.debug(`${sessionData}`)
 
       return sessionData
       
