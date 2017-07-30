@@ -4,19 +4,21 @@ const fs = Promise.promisifyAll(require('fs'))
 const mkdirp = require('mkdirp')
 const logger = require('../config/logger').logger
 const models = require('../models')
+const levenshtein = require('js-levenshtein')
 
 const writeMResults = async ({ sectionsStr,practicePhaseKeystrokeStr, pseudoPhaseKeystrokeStr, pseudoPhaseStr }, user) => {
   try {
-    mkdirp(`results/${user.email}/${user.sessions.length + 1}`, async (err) => {
+    const sesNum = user.sessions.length + 1
+    mkdirp(`results/${user.email}/${sesNum}`, async (err) => {
       if (err) {
         throw err
       }
       
       await Promise.all([
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/mc_sections.csv`, sectionsStr),
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/mc_pseudoword_sections.csv`, pseudoPhaseStr),
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/mc_keypress_phase_keypresses.csv`, practicePhaseKeystrokeStr),
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/mc_pseudoword_phase_keypresses.csv`, pseudoPhaseKeystrokeStr)
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/mc_sections.csv`, sectionsStr),
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/mc_pseudoword_sections.csv`, pseudoPhaseStr),
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/mc_keypress_phase_keypresses.csv`, practicePhaseKeystrokeStr),
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/mc_pseudoword_phase_keypresses.csv`, pseudoPhaseKeystrokeStr)
       ])
     })
   } catch (err) {
@@ -24,17 +26,18 @@ const writeMResults = async ({ sectionsStr,practicePhaseKeystrokeStr, pseudoPhas
   }
 }
 
-const writeAResults = ({ sectionsStr, keystrokeStr, distractionStr }, user) => {
+const writeAResults = async ({ sectionsStr, keystrokeStr, distractionStr }, user) => {
   try {
-    mkdirp(`results/${user.email}/${user.sessions.length + 1}`, async (err) => {
+    const sesNum = user.sessions.length + 1
+    mkdirp(`results/${user.email}/${sesNum}`, async (err) => {
       if (err) {
         throw err
       }
       
       await Promise.all([
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/sa_sections.csv`, sectionsStr),
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/sa_keystrokes.csv`, keystrokeStr),
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/sa_visual_stimulus.csv`, distractionStr)
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/sa_sections.csv`, sectionsStr),
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/sa_keystrokes.csv`, keystrokeStr),
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/sa_visual_stimulus.csv`, distractionStr)
       ])
     })
   } catch (err) {
@@ -42,16 +45,17 @@ const writeAResults = ({ sectionsStr, keystrokeStr, distractionStr }, user) => {
   }
 }
 
-const writeTResults = ({ sectionsStr, keystrokeStr }, user) => {
+const writeTResults = async ({ sectionsStr, keystrokeStr }, user) => {
   try {
-    mkdirp(`results/${user.email}/${user.sessions.length + 1}`, async (err) => {
+    const sesNum = user.sessions.length + 1
+    mkdirp(`results/${user.email}/${sesNum}`, async (err) => {
       if (err) {
         throw err
       }
       
       await Promise.all([
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/t_sections.csv`, sectionsStr),
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/t_keystrokes.csv`, keystrokeStr)
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/t_sections.csv`, sectionsStr),
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/t_keystrokes.csv`, keystrokeStr)
       ])
     })
   } catch (err) {
@@ -59,21 +63,110 @@ const writeTResults = ({ sectionsStr, keystrokeStr }, user) => {
   }
 }
 
-const writeVResults = ({ clickStr, mouseStr }, user) => {
+const writeVResults = async ({ clickStr, mouseStr }, user) => {
   try {
-    mkdirp(`results/${user.email}/${user.sessions.length + 1}`, async (err) => {
+    const sesNum = user.sessions.length + 1
+    mkdirp(`results/${user.email}/${sesNum}`, async (err) => {
       if (err) {
         throw err
       }
       
       await Promise.all([
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/vs_clicks.csv`, clickStr),
-        fs.writeFileAsync(`results/${user.email}/${user.sessions.length + 1}/vs_mouse.csv`, mouseStr)
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/vs_clicks.csv`, clickStr),
+        fs.writeFileAsync(`results/${user.email}/${sesNum}/vs_mouse.csv`, mouseStr)
       ])
     })
   } catch (err) {
     logger.error(`Error while writing results to file: ${err}`)
   }
+}
+
+const calculateAvgIKI = (sections) => {
+  const totalIKI = _.reduce(sections, (total, { keystrokes }) => {
+    // filter for single characters
+    const filteredKeystrokes = _.filter(keystrokes, ({key}) => { return key.length === 1 })
+    return total + (_.last(filteredKeystrokes).keydown - filteredKeystrokes[0].keyup)
+    // return total + _.reduce(filteredKeystrokes, (iki, { keyup, keydown, key }, index) => {
+    //   if (index > 0) {
+    //     return iki + keydown - filteredKeystrokes[index - 1].keyup
+    //   }
+    //   return iki
+    // }, 0)
+  }, 0)
+
+  const totalLength = _.reduce(sections, (total, { keystrokes }) => {
+    return total + keystrokes.length - 1
+  }, 0)
+
+  return totalIKI / totalLength
+}
+
+const calculateMAvgIKI = (sections) => {
+  const totalIKI = _.reduce(sections, (total, { keystrokes }) => {
+    // filter for single characters
+    const filteredKeystrokes = _.filter(keystrokes, ({key}) => { return key.length === 1 })
+    return total + _.reduce(filteredKeystrokes, (iki, { keyup, keydown, key }, index) => {
+      if (index > 0) {
+        return iki + keydown - filteredKeystrokes[index - 1].keyup
+      }
+      return iki
+    }, 0)
+  }, 0)
+
+  const totalLength = _.reduce(sections, (total, { keystrokes }) => {
+    return total + keystrokes.length - 1
+  }, 0)
+
+  return totalIKI / totalLength
+}
+
+const calculateWPM = (sections) => {
+  const avgIKI = calculateAvgIKI(sections)
+  logger.trace(`avgIKI=${avgIKI}`)
+  return 60000 / (avgIKI * 5)
+}
+
+const calculateError = (sections) => {
+  const totalEditDistance = _(sections)
+    .map(({ section }) => {
+      const { sentence, userInput } = section
+      return levenshtein(sentence, userInput)
+    })
+    .sum()
+  const errorLength = _.reduce(sections, (total, { section }) => {
+    const { sentence, userInput } = section
+    return total + Math.max(sentence.length, userInput.length)
+  }, 0)
+  logger.trace(`totalEditDistance=${totalEditDistance}, errorLength=${errorLength}`)
+  return totalEditDistance / errorLength
+}
+
+const calculateAvgReactionTime = (sections) => {
+  const totalReactionTimes = _.reduce(sections, (total, { distractions }) => {
+    return total + _.reduce(distractions, (sumReactionTimes, { distractionShown, reaction }) => {
+      return sumReactionTimes + reaction - distractionShown
+    }, 0)
+  }, 0)
+  const totalDistractions = _.reduce(sections, (total, {distractions}) => {
+    return total + distractions.length
+  }, 0)
+
+  return totalReactionTimes / totalDistractions
+}
+
+const calculateVError = (sections) => {
+  return _.reduce(sections, (errors, { section }) => {
+    if (section.cue !== section.kbdClick.key) {
+      return errors + 1
+    }
+    return errors
+  }, 0) / sections.length
+}
+
+const calculateAvgSearchTime = (sections) => {
+  return _.reduce(sections, (total, { section }) => {
+    return total + section.kbdClick.time - section.cueShown
+  }, 0) / sections.length
 }
 
 const parseMResults = ({ sections }) => {
@@ -98,9 +191,22 @@ const parseMResults = ({ sections }) => {
     })
   })
 
+  _.map(sections, ({keystrokes}) => {
+    return {
+      keystrokes: keystrokes.pseudoKeystrokes
+    }
+  })
+
+  const mTrials = _.values(sections).length
+  const avgIKI = calculateMAvgIKI(_.map(sections, ({keystrokes}) => {
+    return {
+      keystrokes: keystrokes.pseudoKeystrokes
+    }
+  }))
+
   return {
-    mTrials: 123,
-    avgIKI: 222,
+    mTrials,
+    avgIKI,
     toWrite: {
       sectionsStr,
       practicePhaseKeystrokeStr,
@@ -110,7 +216,7 @@ const parseMResults = ({ sections }) => {
   }
 }
 
-const parseAResults = async ({ sections }, user) => {
+const parseAResults = ({ sections }, user) => {
   let sectionsStr = 'section_id\tstimulus\tuser_input\n'
   let keystrokeStr = 'section_id\tkeystroke_id\tpress_time\trelease_time\tletter\n'
   let distractionStr = 'section_id\tvisual_stimulus_id\tstimulus_shown\treaction\n'
@@ -127,10 +233,14 @@ const parseAResults = async ({ sections }, user) => {
     })
   })
 
+  const wpm = calculateWPM(sections)
+  const aErrorRate = calculateError(sections)
+  const avgReactionTime = calculateAvgReactionTime(sections)
+
   return {
-    wpm: 123,
-    aErrorRate: 0.0123,
-    avgReactionTime: 321,
+    wpm,
+    aErrorRate,
+    avgReactionTime,
     toWrite: {
       sectionsStr,
       keystrokeStr,
@@ -151,9 +261,12 @@ const parseTResults = ({ sections }, user) => {
     })
   })
 
+  const wpm = calculateWPM(sections)
+  const tErrorRate = calculateError(sections)
+
   return {
-    wpm: 123,
-    aErrorRate: 0.0123,
+    wpm,
+    tErrorRate,
     toWrite: {
       sectionsStr,
       keystrokeStr
@@ -174,10 +287,15 @@ const parseVResults = ({ sections }, user) => {
     })
   })
 
+  const sectionsArray = _.values(sections)
+  vErrorRate = calculateVError(sectionsArray)
+  avgSearchTime = calculateAvgSearchTime(sectionsArray)
+  vTrials = sectionsArray.length
+
   return {
-    vTrials: 123,
-    vErrorRate: 0.123,
-    avgSearchTime: 321,
+    vTrials,
+    vErrorRate,
+    avgSearchTime,
     toWrite: {
       clickStr,
       mouseStr
@@ -190,7 +308,8 @@ module.exports = {
     try {
       const user = await models.User.findOne({ email })
 
-      const parsedResults = _(results)
+      logger.trace(`results=${results}`)
+      const parsedResults = await Promise.all(_(results)
         .map(async (interventionResults, key) => {
           switch (interventionResults.type) {
           case 'M':
@@ -198,26 +317,30 @@ module.exports = {
             await writeMResults(mResults.toWrite, user)
             return _.omit(mResults, 'toWrite')
           case 'A':
-            const aResults = await parseAResults(interventionResults)
+            const aResults = parseAResults(interventionResults)
             await writeAResults(aResults.toWrite, user)
             return _.omit(aResults, 'toWrite')
           case 'V':
-            const vResults = await parseVResults(interventionResults)
+            const vResults = parseVResults(interventionResults)
             await writeVResults(vResults.toWrite, user)
             return _.omit(vResults, 'toWrite')
           case 'T':
-            const tResults = await parseTResults(interventionResults)
+            const tResults = parseTResults(interventionResults)
             await writeTResults(tResults.toWrite, user)
             return _.omit(tResults, 'toWrite')
           }
         })
-        .reduce((o, values) => { return _.merge(o,values) }, {})
+        .value())
+
+      const result = _.reduce(parsedResults, (o, values) => {
+          return _.merge(o,values) 
+        }, {})
 
       const session = {
         sessionNum: user.sessions.length + 1,
         date: Date.now(),
         hasAppliedSkills: false,
-        results: parsedResults
+        results: result
       }
 
       user.sessions.push(session)
