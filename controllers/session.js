@@ -78,7 +78,7 @@ module.exports = {
         } else if (intervention.type === 'T') {
           const sentences = await models.Sentence.find({ intervention: intervention.sentences })
           const interventionData = {
-            sentences: _.map(sentences, sentence => sentence.sentence).slice(0, 3)
+            sentences: _.map(sentences, sentence => sentence.sentence)
           }
           return _.merge(session, { interventionData })
         }
