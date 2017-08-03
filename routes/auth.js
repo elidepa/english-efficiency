@@ -11,14 +11,17 @@ const appSecret = require('../config/auth').appSecret
 module.exports = router => {
   router.post('/api/login', async (ctx, next) => {
     try {
-      // TODO: Actual auth logic
       logger.trace(ctx.request.body)
       logger.debug(`logging user ${ctx.request.body.email} in`)
+
       const user = await models.User.findOne({ email: ctx.request.body.email })
       const token = await jwt.signAsync({ user: user.email }, appSecret, { expiresIn: 60 * 60 * 48 })
+
       logger.debug(`login successful, user=${ctx.request.body.email}`)
+
       ctx.status = 200
       ctx.body = JSON.stringify({token})
+      
     } catch (err) {
       switch (err.name) {
       case 'TypeError': {

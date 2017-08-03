@@ -16,5 +16,6 @@ module.exports = app => {
 
   // Authenticated routes
   require('./session')(routerProtected)
+  require('./results')(routerProtected)
   app.use(routerProtected.routes())
 }
