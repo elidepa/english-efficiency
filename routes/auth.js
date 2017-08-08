@@ -1,7 +1,6 @@
 const Promise = require('bluebird')
 const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const crypto = Promise.promisifyAll(require('crypto'))
-const scrypt = require('scrypt')
 
 const parseMongoError = require('../lib/parse-mongo-error')
 const logger = require('../config/logger').logger
