@@ -107,6 +107,7 @@ const calculateMAvgIKI = (sections) => {
     const filteredKeystrokes = _.filter(keystrokes, ({key}) => { return key.length === 1 })
     return total + _.reduce(filteredKeystrokes, (iki, { keyup, keydown, key }, index) => {
       if (index > 0) {
+        logger.trace(`iki=${iki}, keydown=${keydown}, keyup=${filteredKeystrokes[index - 1].keyup}`)
         return iki + keydown - filteredKeystrokes[index - 1].keyup
       }
       return iki
@@ -116,6 +117,8 @@ const calculateMAvgIKI = (sections) => {
   const totalLength = _.reduce(sections, (total, { keystrokes }) => {
     return total + keystrokes.length - 1
   }, 0)
+
+  logger.trace(`totalLength=${totalLength}, totalIKI=${totalIKI}`)
 
   return totalIKI / totalLength
 }
@@ -308,26 +311,27 @@ module.exports = {
     try {
       const user = await models.User.findOne({ email })
 
-      logger.trace(`results=${results}`)
+      logger.trace('results:')
+      logger.trace(results)
       const parsedResults = await Promise.all(_(results)
         .map(async (interventionResults, key) => {
           switch (interventionResults.type) {
           case 'M':
             const mResults = parseMResults(interventionResults)
             await writeMResults(mResults.toWrite, user)
-            return _.omit(mResults, 'toWrite')
+            return _.omitBy(mResults, (value, key) => { return isNaN(value) || key === 'toWrite' })
           case 'A':
             const aResults = parseAResults(interventionResults)
             await writeAResults(aResults.toWrite, user)
-            return _.omit(aResults, 'toWrite')
+            return _.omitBy(aResults, (value, key) => { return isNaN(value) || key === 'toWrite' })
           case 'V':
             const vResults = parseVResults(interventionResults)
             await writeVResults(vResults.toWrite, user)
-            return _.omit(vResults, 'toWrite')
+            return _.omitBy(vResults, (value, key) => { return isNaN(value) || key === 'toWrite' })
           case 'T':
             const tResults = parseTResults(interventionResults)
             await writeTResults(tResults.toWrite, user)
-            return _.omit(tResults, 'toWrite')
+            return _.omitBy(tResults, (value, key) => { return isNaN(value) || key === 'toWrite' })
           }
         })
         .value())
@@ -335,6 +339,9 @@ module.exports = {
       const result = _.reduce(parsedResults, (o, values) => {
           return _.merge(o,values) 
         }, {})
+
+      logger.trace('result:')
+      logger.trace(result)
 
       const session = {
         sessionNum: user.sessions.length + 1,

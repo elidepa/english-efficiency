@@ -7,7 +7,7 @@ module.exports = {
   interventionConfig: {
     '1': {
       'I': {
-        minTimeFromLast: 43200000,
+        minTimeFromLast: 14400000,
         interventions: [
           {
             type: 'A',
@@ -24,7 +24,7 @@ module.exports = {
         ]
       },
       'T1': {
-        minTimeFromLast: 43200000,
+        minTimeFromLast: 14400000,
         interventions: [
           {
             type: 'T',
@@ -33,7 +33,7 @@ module.exports = {
         ]
       },
       'T2': {
-        minTimeFromLast: 43200000,
+        minTimeFromLast: 14400000,
         interventions: [
           {
             type: 'T',
@@ -42,7 +42,7 @@ module.exports = {
         ]
       },
       'T3': {
-        minTimeFromLast: 43200000,
+        minTimeFromLast: 14400000,
         interventions: [
           {
             type: 'T',
@@ -51,7 +51,7 @@ module.exports = {
         ]
       },
       'T4': {
-        minTimeFromLast: 43200000,
+        minTimeFromLast: 14400000,
         interventions: [
           {
             type: 'T',
@@ -84,15 +84,15 @@ module.exports = {
         interventions: [
           {
             type: 'A',
-            duration: 120000
+            duration: 12000
           },
           {
             type: 'M',
-            duration: 120000
+            duration: 12000
           },
           {
             type: 'V',
-            duration: 120000
+            duration: 12000
           }
         ]
       },
