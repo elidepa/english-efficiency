@@ -1,7 +1,7 @@
 
 module.exports = {
   groupConfig: {
-    '1': ['T1','I','I','I','I','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','I','T4','T5','T6'],
+    '1': ['T1','I','I','I','I','I','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','I','T4','T5','T6'],
     'test': ['T1','I','I','I','I','I','I','I']
   },
   interventionConfig: {

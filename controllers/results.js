@@ -85,17 +85,18 @@ const calculateAvgIKI = (sections) => {
   const totalIKI = _.reduce(sections, (total, { keystrokes }) => {
     // filter for single characters
     const filteredKeystrokes = _.filter(keystrokes, ({key}) => { return key.length === 1 })
+    if (_.isEmpty(filteredKeystrokes)) {
+      return total
+    }
     return total + (_.last(filteredKeystrokes).keydown - filteredKeystrokes[0].keyup)
-    // return total + _.reduce(filteredKeystrokes, (iki, { keyup, keydown, key }, index) => {
-    //   if (index > 0) {
-    //     return iki + keydown - filteredKeystrokes[index - 1].keyup
-    //   }
-    //   return iki
-    // }, 0)
   }, 0)
 
   const totalLength = _.reduce(sections, (total, { keystrokes }) => {
-    return total + keystrokes.length - 1
+    const filteredKeystrokes = _.filter(keystrokes, ({key}) => { return key.length === 1 })
+    if (_.isEmpty(filteredKeystrokes)) {
+      return total
+    }
+    return total + filteredKeystrokes.length - 1
   }, 0)
 
   return totalIKI / totalLength
