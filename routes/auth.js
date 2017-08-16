@@ -56,9 +56,10 @@ module.exports = router => {
 
   router.post('/api/user', async (ctx, next) => {
     try {
-      const { email, group } = ctx.request.body
+      const { email, group, partTimer } = ctx.request.body
 
       const user = new models.User({
+        partTimer,
         email,
         group,
         sessions: []

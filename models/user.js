@@ -11,6 +11,7 @@ const user = new Schema({
     type: String,
     required: true
   },
+  partTimer: Boolean,
   sessions: [{
     sessionNum: Number,
     date: {
