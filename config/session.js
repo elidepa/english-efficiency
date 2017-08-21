@@ -2,7 +2,7 @@
 module.exports = {
   groupConfig: {
     '1': ['T1','I','I','I','I','I','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','I','T4','T5','T6'],
-    'ashlea.evans@dwp.gsi.gov.uk': ['T1','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','I','T4','T5','T6']
+    'ashlea.evans@dwp.gsi.gov.uk': ['T1','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','I','T4','T5','T6'],
     'test': ['T1','I','I','I','I','I','I','I']
   },
   interventionConfig: {
