@@ -95,5 +95,17 @@ module.exports = {
     } catch (err) {
       logger.error(`Generating session data failed: ${err}`)
     }
+  },
+  getAllSessionDates: async () => {
+    const users = await models.User.find({ group: { $ne: 'test' }}).select('email sessions')
+    return _.map(users, user => {
+      const sessions = _.map(user.sessions, session => {
+        return session.date
+      })
+      return {
+        email: user.email,
+        sessions
+      }
+    })
   }
 }

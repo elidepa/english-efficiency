@@ -10,6 +10,7 @@ module.exports = app => {
   // Unauthenticated routes
   require('./test')(router)
   require('./auth')(router)
+  require('./overview')(router)
   app.use(router.routes())
 
   app.use(jwt({ secret: config.appSecret }))
