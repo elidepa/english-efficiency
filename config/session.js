@@ -8,7 +8,7 @@ module.exports = {
   interventionConfig: {
     '1': {
       'I': {
-        minTimeFromLast: 14400000,
+        minTimeFromLast: 1000,
         interventions: [
           {
             type: 'A',
