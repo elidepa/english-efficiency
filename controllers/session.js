@@ -90,7 +90,10 @@ module.exports = {
       logger.debug(`session data ready, user=${username}`)
       logger.debug(`${sessionData}`)
 
-      return sessionData
+      return {
+        lastSession: sessionType === 'LI',
+        interventions: sessionData
+      }
       
     } catch (err) {
       logger.error(`Generating session data failed: ${err}`)

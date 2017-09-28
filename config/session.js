@@ -1,14 +1,31 @@
 
 module.exports = {
   groupConfig: {
-    '1': ['T1','I','I','I','I','I','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','I','T4','T5','T6'],
-    'ashlea.evans@dwp.gsi.gov.uk': ['T1','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','I','T4','T5','T6'],
-    'test': ['T1','I','I','I','I','I','I','I']
+    '1': ['T1','I','I','I','I','I','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','LI','T4','T5','T6'],
+    'ashlea.evans@dwp.gsi.gov.uk': ['T1','I','I','I','T2','I','I','I','I','I','I','I','T3','I','I','I','I','I','I','LI','T4','T5','T6'],
+    'test': ['LI','I','I','I','I','I','I','I']
   },
   interventionConfig: {
     '1': {
       'I': {
-        minTimeFromLast: 1000,
+        minTimeFromLast: 14400000,
+        interventions: [
+          {
+            type: 'A',
+            duration: 480000
+          },
+          {
+            type: 'M',
+            duration: 480000
+          },
+          {
+            type: 'V',
+            duration: 480000
+          }
+        ]
+      },
+      'LI': {
+        minTimeFromLast: 14400000,
         interventions: [
           {
             type: 'A',
@@ -85,15 +102,32 @@ module.exports = {
         interventions: [
           {
             type: 'A',
-            duration: 12000
+            duration: 120000
           },
           {
             type: 'M',
-            duration: 12000
+            duration: 120000
           },
           {
             type: 'V',
-            duration: 12000
+            duration: 120000
+          }
+        ]
+      },
+      'LI': {
+        minTimeFromLast: 14400000,
+        interventions: [
+          {
+            type: 'A',
+            duration: 1000
+          },
+          {
+            type: 'M',
+            duration: 1000
+          },
+          {
+            type: 'V',
+            duration: 1000
           }
         ]
       },
@@ -154,6 +188,23 @@ module.exports = {
     },
     'ashlea.evans@dwp.gsi.gov.uk': {
       'I': {
+        minTimeFromLast: 14400000,
+        interventions: [
+          {
+            type: 'A',
+            duration: 480000
+          },
+          {
+            type: 'M',
+            duration: 480000
+          },
+          {
+            type: 'V',
+            duration: 480000
+          }
+        ]
+      },
+      'LI': {
         minTimeFromLast: 14400000,
         interventions: [
           {

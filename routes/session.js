@@ -19,9 +19,7 @@ module.exports = router => {
     // logger.debug(await sessionController.generateSessionData(user))
 
     try {
-      ctx.body = JSON.stringify({
-        interventions: await sessionController.generateSessionData(user)
-      })
+      ctx.body = JSON.stringify(await sessionController.generateSessionData(user))
       ctx.status = 200
     } catch (err) {
       logger.error(`Could not generate session data: ${err}`)
