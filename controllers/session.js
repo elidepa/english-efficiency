@@ -91,7 +91,7 @@ module.exports = {
       logger.debug(`${sessionData}`)
 
       return {
-        lastSession: sessionType === 'LI',
+        lastSession: sessionType === 'T4',
         interventions: sessionData
       }
       
